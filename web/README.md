@@ -1,7 +1,6 @@
 # Web Site
 
-This directory contains the Astro + React site for **Understanding Fantastic
-Coding Agents**.
+This directory contains the Astro + React site for **awesome coding agents**
 
 The site is a static documentation wrapper around the Markdown chapters in the
 repository root:

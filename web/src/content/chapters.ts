@@ -68,7 +68,7 @@ export const deepDivesByLanguage: Record<Language, DeepDive[]> = {
 export const siteCopy = {
   en: {
     htmlLang: 'en',
-    siteTitle: 'awesome coding agents',
+    siteTitle: 'Awesome Coding Agents',
     navBrand: 'Coding Agents',
     homeTitle: 'Home',
     chaptersHeading: 'Chapters',
@@ -83,7 +83,7 @@ export const siteCopy = {
   },
   zh: {
     htmlLang: 'zh-CN',
-    siteTitle: '理解出色的编程 Agent',
+    siteTitle: 'Awesome Coding Agents',
     navBrand: '编程 Agent',
     homeTitle: '首页',
     chaptersHeading: '章节',
