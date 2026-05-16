@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroBanner from '../components/HeroBanner';
+import AgentLoopDiagram from '../components/AgentLoopDiagram';
+import ToolMatrix from '../components/ToolMatrix';
+import ChapterCard from '../components/ChapterCard.astro';
+import { getChapters, getSiteCopy, type Language } from '../content/chapters';
+import { localizedChapterHref, localizedHomeHref } from '../utils/i18n';
+
+const base = import.meta.env.BASE_URL;
+const language: Language = 'en';
+const chapters = getChapters(language);
+const copy = getSiteCopy(language);
+---
+<BaseLayout
+  title={copy.homeTitle}
+  language={language}
+  alternateEnHref={localizedHomeHref(base, 'en')}
+  alternateZhHref={localizedHomeHref(base, 'zh')}
+>
+  <main class="container home-shell">
+    <HeroBanner language={language} client:load />
+    <AgentLoopDiagram language={language} client:visible />
+    <ToolMatrix language={language} client:visible />
+
+    <section id="chapters" class="chapters-section">
+      <div class="section-header">
+        <span class="eyebrow">CHAPTERS</span>
+        <h2 class="section-heading">{copy.chaptersHeading}</h2>
+      </div>
+      <div class="chapter-grid">
+        {chapters.map((ch) => (
+          <ChapterCard
+            number={ch.number}
+            title={ch.title}
+            description={ch.description}
+            href={localizedChapterHref(base, language, ch.slug)}
+          />
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .home-shell {
+    position: relative;
+  }
+  .chapters-section {
+    padding: 56px 0 24px;
+  }
+  .section-header {
+    max-width: 720px;
+    margin-bottom: 24px;
+  }
+  .chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 900px) {
+    .chapter-grid { grid-template-columns: 1fr; }
+  }
+</style>

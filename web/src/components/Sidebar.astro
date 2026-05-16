@@ -1,0 +1,115 @@
+---
+import { getChapters, getDeepDives, getSiteCopy, type Language } from '../content/chapters';
+import { localizedChapterHref, localizedHomeHref } from '../utils/i18n';
+
+interface Props {
+  currentSlug: string;
+  language?: Language;
+}
+
+const { currentSlug, language = 'en' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const chapters = getChapters(language);
+const deepDives = getDeepDives(language);
+const copy = getSiteCopy(language);
+---
+<aside class="sidebar">
+  <a href={localizedHomeHref(base, language)} class="sidebar-home">{copy.breadcrumbHome}</a>
+  <nav aria-label="Chapter navigation">
+    {chapters.map((ch) => (
+      <div class="sidebar-group">
+        <a
+          href={localizedChapterHref(base, language, ch.slug)}
+          class:list={['sidebar-link', { active: currentSlug === ch.slug }]}
+        >
+          <span class="sidebar-num">{ch.number}</span>
+          <span>{ch.title}</span>
+        </a>
+        {deepDives.filter((deepDive) => deepDive.parentSlug === ch.slug).map((deepDive) => (
+          <a
+            href={localizedChapterHref(base, language, deepDive.slug)}
+            class:list={['sidebar-deep-link', { active: currentSlug === deepDive.slug }]}
+          >
+            {deepDive.title}
+          </a>
+        ))}
+      </div>
+    ))}
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    position: sticky;
+    top: 86px;
+    width: 248px;
+    flex-shrink: 0;
+    max-height: calc(100vh - 104px);
+    overflow-y: auto;
+    padding-right: 18px;
+    border-right: 1px solid var(--border);
+  }
+
+  .sidebar-home {
+    display: block;
+    margin-bottom: 12px;
+    padding: 8px 0 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .sidebar-group {
+    margin-bottom: 2px;
+  }
+
+  .sidebar-link {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 8px;
+    padding: 7px 0;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .sidebar-link:hover,
+  .sidebar-link.active {
+    color: var(--text);
+  }
+
+  .sidebar-link.active {
+    color: var(--accent-bright);
+  }
+
+  .sidebar-num {
+    color: var(--text-muted);
+    font-family: var(--font-pixel);
+    font-size: 0.48rem;
+    line-height: 1.9;
+  }
+
+  .sidebar-link.active .sidebar-num {
+    color: var(--accent-bright);
+  }
+
+  .sidebar-deep-link {
+    display: block;
+    padding: 1px 0 7px 38px;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    line-height: 1.4;
+  }
+
+  .sidebar-deep-link:hover,
+  .sidebar-deep-link.active {
+    color: var(--cyan);
+  }
+
+  @media (max-width: 980px) {
+    .sidebar {
+      display: none;
+    }
+  }
+</style>

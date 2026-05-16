@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Sidebar from '../../../components/Sidebar.astro';
+import { getChapters, getDeepDives, getSiteCopy, type Language } from '../../../content/chapters';
+import { localizedChapterHref, localizedHomeHref } from '../../../utils/i18n';
+import { renderMarkdown } from '../../../utils/markdown';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const language: Language = 'zh';
+const copy = getSiteCopy(language);
+const deepDive = getDeepDives(language).find((item) => item.slug === 'extensions-deep-dive')!;
+const parent = getChapters(language).find((item) => item.slug === deepDive.parentSlug)!;
+const docsDir = path.resolve(process.cwd(), '..', 'docs');
+const mdPath = path.join(docsDir, deepDive.docPath);
+const rawContent = fs.readFileSync(mdPath, 'utf-8');
+const htmlContent = await renderMarkdown(rawContent);
+
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout
+  title={deepDive.title}
+  language={language}
+  alternateEnHref={localizedChapterHref(base, 'en', deepDive.slug)}
+  alternateZhHref={localizedChapterHref(base, 'zh', deepDive.slug)}
+>
+  <div class="container chapter-layout">
+    <Sidebar currentSlug={deepDive.slug} language={language} />
+    <article class="chapter-content">
+      <nav class="breadcrumb">
+        <a href={localizedHomeHref(base, language)}>{copy.breadcrumbHome}</a> <span class="sep">/</span> <a href={localizedChapterHref(base, language, parent.slug)}>{parent.title}</a> <span class="sep">/</span> <span>{copy.extensionsDeepDive}</span>
+      </nav>
+      <Fragment set:html={htmlContent} />
+      <nav class="chapter-nav">
+        <a href={localizedChapterHref(base, language, parent.slug)} class="nav-prev">{copy.backToToolSystem}</a>
+      </nav>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .chapter-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+    padding-top: 42px;
+    padding-bottom: 48px;
+  }
+  .chapter-content {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    max-width: 880px;
+    padding: 28px;
+    border: 1px solid rgba(0, 255, 65, 0.24);
+    border-radius: 6px;
+    background:
+      linear-gradient(180deg, rgba(0, 255, 65, 0.04), rgba(4, 6, 5, 0.9)),
+      var(--surface);
+    box-shadow: var(--shadow-neon);
+  }
+  .chapter-content::before {
+    content: "DEEP_DIVE_BUFFER";
+    position: absolute;
+    top: -13px;
+    left: 18px;
+    padding: 0 8px;
+    background: var(--bg);
+    color: var(--accent);
+    font-family: var(--font-terminal);
+    font-size: 1rem;
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.42);
+  }
+  .chapter-content :global(h1) {
+    color: var(--accent);
+    margin-bottom: 28px;
+    font-family: var(--font-pixel);
+    font-size: clamp(1.05rem, 2.4vw, 1.7rem);
+    text-shadow: 0 0 18px rgba(0, 255, 65, 0.32);
+  }
+  .chapter-content :global(h2) {
+    color: var(--text);
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(0, 255, 65, 0.24);
+    font-family: var(--font-terminal);
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+  .chapter-content :global(h3) {
+    color: var(--cyan);
+    margin-top: 32px;
+    margin-bottom: 12px;
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.24);
+  }
+  .chapter-content :global(p) { margin-bottom: 16px; color: var(--text-secondary); }
+  .chapter-content :global(ul), .chapter-content :global(ol) { margin-bottom: 16px; padding-left: 24px; }
+  .chapter-content :global(li) { margin-bottom: 6px; color: var(--text-secondary); }
+  .breadcrumb {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 24px;
+    padding: 8px 10px;
+    border: 1px solid rgba(0, 255, 65, 0.18);
+    background: rgba(0, 255, 65, 0.035);
+    color: var(--text-secondary);
+    font-family: var(--font-terminal);
+    font-size: 1.08rem;
+    line-height: 1;
+  }
+  .breadcrumb a { color: var(--accent); }
+  .breadcrumb .sep { color: rgba(0, 255, 65, 0.35); }
+  .chapter-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px dashed rgba(0, 255, 65, 0.24);
+    font-size: 0.9rem;
+    gap: 14px;
+  }
+  .nav-prev, .nav-next {
+    padding: 10px 12px;
+    border: 1px solid rgba(0, 255, 65, 0.22);
+    border-radius: 4px;
+    background: rgba(0, 255, 65, 0.035);
+    color: var(--accent);
+    font-family: var(--font-terminal);
+    font-size: 1.08rem;
+    line-height: 1.1;
+  }
+  .nav-prev:hover, .nav-next:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-neon);
+  }
+  .nav-next { margin-left: auto; }
+  @media (max-width: 900px) {
+    .chapter-layout { display: block; }
+    .chapter-content { padding: 22px 18px; }
+  }
+  @media (max-width: 560px) {
+    .chapter-nav { flex-direction: column; }
+    .nav-next { margin-left: 0; }
+  }
+</style>

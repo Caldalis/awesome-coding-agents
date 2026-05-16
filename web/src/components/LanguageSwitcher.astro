@@ -1,0 +1,49 @@
+---
+import type { Language } from '../content/chapters';
+
+interface Props {
+  current: Language;
+  enHref: string;
+  zhHref: string;
+}
+
+const { current, enHref, zhHref } = Astro.props;
+---
+<div class="language-switcher" aria-label="Language switcher">
+  <a href={enHref} class:list={['language-link', { active: current === 'en' }]} aria-current={current === 'en' ? 'page' : undefined}>
+    English
+  </a>
+  <a href={zhHref} class:list={['language-link', { active: current === 'zh' }]} aria-current={current === 'zh' ? 'page' : undefined}>
+    中文
+  </a>
+</div>
+
+<style>
+  .language-switcher {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .language-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 9px;
+    border-radius: 5px;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-decoration: none;
+  }
+
+  .language-link:hover,
+  .language-link.active {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--accent-bright);
+    text-decoration: none;
+  }
+</style>

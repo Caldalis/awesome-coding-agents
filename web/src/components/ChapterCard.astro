@@ -1,0 +1,65 @@
+---
+interface Props {
+  number: string;
+  title: string;
+  description: string;
+  href: string;
+}
+
+const { number, title, description, href } = Astro.props;
+---
+<a href={href} class="chapter-card">
+  <span class="card-number">{number}</span>
+  <div>
+    <h3 class="card-title">{title}</h3>
+    <p class="card-desc">{description}</p>
+  </div>
+</a>
+
+<style>
+  .chapter-card {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 14px;
+    min-height: 128px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(16, 20, 19, 0.72);
+    text-decoration: none;
+    transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+  }
+
+  .chapter-card:hover {
+    transform: translateY(-1px);
+    border-color: var(--border-green);
+    background: rgba(16, 185, 129, 0.07);
+    text-decoration: none;
+  }
+
+  .card-number {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid var(--border-green);
+    border-radius: 8px;
+    color: var(--accent-bright);
+    font-family: var(--font-pixel);
+    font-size: 0.52rem;
+    line-height: 1;
+  }
+
+  .card-title {
+    color: var(--text);
+    font-size: 0.98rem;
+    line-height: 1.45;
+    margin-bottom: 8px;
+  }
+
+  .card-desc {
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+</style>

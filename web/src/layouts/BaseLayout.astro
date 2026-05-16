@@ -1,0 +1,158 @@
+---
+import '../styles/global.css';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import { getSiteCopy, type Language } from '../content/chapters';
+import { assetHref, localizedHomeHref } from '../utils/i18n';
+
+interface Props {
+  title: string;
+  language?: Language;
+  alternateEnHref?: string;
+  alternateZhHref?: string;
+}
+
+const { title, language = 'en', alternateEnHref, alternateZhHref } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const copy = getSiteCopy(language);
+const homeHref = localizedHomeHref(base, language);
+const enHref = alternateEnHref ?? localizedHomeHref(base, 'en');
+const zhHref = alternateZhHref ?? localizedHomeHref(base, 'zh');
+---
+<!DOCTYPE html>
+<html lang={copy.htmlLang}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} | {copy.siteTitle}</title>
+  <link rel="icon" type="image/svg+xml" href={assetHref(base, 'favicon.svg')} />
+</head>
+<body>
+  <div class="site-root">
+    <nav class="site-nav">
+      <div class="container nav-inner">
+        <a href={homeHref} class="brand-link">
+          <span class="brand-mark">CA</span>
+          <span>{copy.navBrand}</span>
+        </a>
+        <div class="nav-actions">
+          <LanguageSwitcher current={language} enHref={enHref} zhHref={zhHref} />
+          <a href="https://github.com/Caldalis/awesome-coding-agents" target="_blank" class="github-link">
+            GitHub
+          </a>
+        </div>
+      </div>
+    </nav>
+    <slot />
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <span class="footer-kicker">docs/runtime</span>
+        <p>{copy.siteTitle}</p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
+
+<style>
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid var(--border);
+    background: rgba(9, 9, 11, 0.86);
+    backdrop-filter: blur(14px);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 62px;
+    gap: 18px;
+  }
+
+  .brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .brand-link:hover {
+    color: var(--accent-bright);
+  }
+
+  .brand-mark {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border: 1px solid var(--border-green);
+    border-radius: 6px;
+    background: rgba(16, 185, 129, 0.08);
+    color: var(--accent-bright);
+    font-family: var(--font-pixel);
+    font-size: 0.46rem;
+    box-shadow: var(--glow-soft);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 11px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .github-link:hover {
+    border-color: var(--border-green);
+    color: var(--accent-bright);
+  }
+
+  .site-footer {
+    margin-top: 56px;
+    padding: 28px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .footer-kicker {
+    color: var(--accent);
+    font-size: 0.76rem;
+  }
+
+  @media (max-width: 680px) {
+    .nav-inner {
+      align-items: flex-start;
+      flex-direction: column;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    .nav-actions,
+    .footer-inner {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+</style>
