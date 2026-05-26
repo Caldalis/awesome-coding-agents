@@ -2,6 +2,8 @@
 
 [English](README.md) | 中文
 
+**在线阅读地址：** https://caldalis.github.io/awesome-coding-agents
+
 一份从源码层面研究编程 Agent 如何感知、决策、行动与验证的技术文档。
 
 这个仓库不是产品使用手册，而是一个面向实现者的源码解读项目。它围绕两个本地源码目录展开分析：

@@ -2,6 +2,8 @@
 
 English | [中文](README_zh.md)
 
+**Online reading address:**  https://caldalis.github.io/awesome-coding-agents
+
 A source-level study of how coding agents perceive, decide, act, and verify.
 
 This repository is a technical documentation project about modern coding-agent
